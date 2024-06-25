@@ -10,3 +10,7 @@ export interface NamespaceParams {
   middlewares?: Middleware[];
   description?: string;
 }
+
+export interface NamespaceDescriptor extends PropertyDescriptor {
+  value?: (...args: any[]) => UlakEventFactory[];
+}

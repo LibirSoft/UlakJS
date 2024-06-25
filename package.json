@@ -2,14 +2,20 @@
   "name": "ulakjs",
   "version": "1.0.0",
   "description": "ulakJS is a library that helps you to use sockito.io in a easy way",
-  "main": "index.js",
+  "main": "dist/src/index.ts",
+  "types": "dist/src/index.d.ts",
   "keywords": [],
   "author": "Libirsoft",
   "license": "UNLICENSED",
   "dependencies": {
     "ts-node": "^10.9.2"
   },
+  "scripts": {
+    "build": "tsc"
+  },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.14.1",
     "eslint": "^8.0.1",
     "eslint-config-alloy": "^5.1.2",
     "eslint-config-prettier": "^9.1.0",

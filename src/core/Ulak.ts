@@ -6,11 +6,11 @@ import type { LoggerOptions } from './types/logger/logger';
 import type { UlakEventFactory } from './event/UlakEventFactory';
 
 export class Ulak {
-  private server: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+  private readonly server: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 
   private namespaceFactory: UlakNamespaceFactory;
 
-  private loogerOptions: LoggerOptions = { enable: false };
+  private loggerOptions: LoggerOptions = { enable: false };
 
   public constructor(
     server: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
@@ -18,18 +18,18 @@ export class Ulak {
   ) {
     this.server = server;
     if (loggerOptions) {
-      this.loogerOptions = loggerOptions;
+      this.loggerOptions = loggerOptions;
     }
   }
 
   public start(callback?: () => void | Promise<void>): void {
     // bind namespaces to server
-    this.bindNameSpaces();
+    this.bindNamespaces();
 
     if (callback) callback();
   }
 
-  private bindNameSpaces() {
+  private bindNamespaces() {
     // bind nameSpace factory middlewares to server
 
     const boundenGlobalMiddleWares: string[] = [];
@@ -37,7 +37,7 @@ export class Ulak {
     this.server.on('new_namespace', (namespace) => {
       for (const middleware of this.namespaceFactory.middlewares) {
         if (!boundenGlobalMiddleWares.includes(middleware.name)) {
-          if (this.loogerOptions.enable) this.getLogger().log('Global Middleware bound: ', middleware.name);
+          if (this.loggerOptions.enable) this.getLogger().log('Global Middleware bound: ', middleware.name);
           boundenGlobalMiddleWares.push(middleware.name);
         }
         namespace.use(middleware);
@@ -51,7 +51,7 @@ export class Ulak {
 
       if (namespace.middlewares) {
         for (const middleware of namespace.middlewares) {
-          if (this.loogerOptions.enable)
+          if (this.loggerOptions.enable)
             this.getLogger().log(
               `${middleware.name} Middleware bound to namespace: ${namespace.namespace === '' ? 'Default' : namespace.namespace}`,
             );
@@ -81,7 +81,7 @@ export class Ulak {
           });
         }
       });
-      if (this.loogerOptions.enable) {
+      if (this.loggerOptions.enable) {
         this.logEventFactories(ulakEventFactory, namespace);
       }
     }
@@ -97,7 +97,7 @@ export class Ulak {
   }
 
   private getLogger() {
-    return this.loogerOptions.logger || console;
+    return this.loggerOptions.logger || console;
   }
 
   private logEventFactories(ulakEventFactory: UlakEventFactory, namespace: UlakNamespace) {
