@@ -1,4 +1,5 @@
-export { Hermes } from './core/Hermes';
-export { NameSpace } from './core/namespace/NameSpace';
-export { Route, HermesRoute } from './core/route/HermesRoute';
-export { Middleware } from './core/middleware/middleware';
+export { Ulak } from './core/Ulak';
+export { UlakNamespaceFactory } from './core/namespace/UlakNamespaceFactory';
+export { UlakEvent } from './core/types/socket/event';
+export { EventFactory, UlakEventFactory, Event } from './core/event/UlakEventFactory';
+export { Middleware } from './core/types/middleware/middleware';
