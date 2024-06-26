@@ -69,6 +69,7 @@ export class Ulak {
   ) {
     for (const ulakEventFactory of namespace.eventFactories) {
       ulakEventFactory.io = this.server;
+      ulakEventFactory.namespace = ioNamesapce;
 
       ioNamesapce.on('connection', async (socket) => {
         ulakEventFactory.socket = socket;

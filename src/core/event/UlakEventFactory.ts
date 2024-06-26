@@ -1,5 +1,5 @@
 import type { UlakEvent } from '../types/socket/event';
-import type { Server, Socket } from 'socket.io';
+import type { Namespace, Server, Socket } from 'socket.io';
 import type { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import type { PublicConstructor } from '../namespace/UlakNamespaceFactory';
 
@@ -13,6 +13,8 @@ export class UlakEventFactory {
   private _socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 
   private _io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+
+  private _namespace: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 
   public add(event: UlakEvent): void {
     this._events.push(event);
@@ -56,6 +58,14 @@ export class UlakEventFactory {
 
   public set path(value: string) {
     this._path = value;
+  }
+
+  public get namespace(): Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> {
+    return this._namespace;
+  }
+
+  public set namespace(value: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) {
+    this._namespace = value;
   }
 }
 
