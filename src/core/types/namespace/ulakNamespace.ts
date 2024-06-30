@@ -6,7 +6,7 @@ export interface UlakNamespace extends NamespaceParams {
 }
 
 export interface NamespaceParams {
-  namespace: string;
+  namespace?: string;
   middlewares?: Middleware[];
   description?: string;
 }

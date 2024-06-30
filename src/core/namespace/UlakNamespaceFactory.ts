@@ -1,5 +1,5 @@
 import type { Middleware } from '../types/middleware/middleware';
-import type { NamespaceDescriptor, NamespaceParams, UlakNamespace } from '../types/nameSpace/ulakNamespace';
+import type { NamespaceDescriptor, NamespaceParams, UlakNamespace } from '../types/namespace/ulakNamespace';
 
 export class UlakNamespaceFactory {
   private _namespaces: UlakNamespace[] = [];
@@ -25,12 +25,12 @@ export class UlakNamespaceFactory {
 
 export type PublicConstructor<T> = new () => T;
 
-export function NamespaceFactory(middleware: Middleware[]) {
+export function NamespaceFactory(middleware?: Middleware[]) {
   return function (ulakNamespaceFactory: typeof UlakNamespaceFactory): PublicConstructor<any> {
     return class extends ulakNamespaceFactory {
       public constructor() {
         super();
-        this.middlewares = middleware;
+        this.middlewares = middleware || [];
 
         for (const methodName of Object.getOwnPropertyNames(ulakNamespaceFactory.prototype)) {
           const descriptor = Object.getOwnPropertyDescriptor(ulakNamespaceFactory.prototype, methodName);
@@ -45,7 +45,7 @@ export function NamespaceFactory(middleware: Middleware[]) {
   };
 }
 
-export function NameSpace({ namespace, description, middlewares }: NamespaceParams) {
+export function NameSpace(_params?: NamespaceParams) {
   return function (factory: UlakNamespaceFactory, propertyKey: string, descriptor: NamespaceDescriptor) {
     const originalMethod = descriptor.value;
 
@@ -53,15 +53,27 @@ export function NameSpace({ namespace, description, middlewares }: NamespacePara
       throw new Error('Decorator can only be used in a method');
     }
 
+    let _namespaceParams = _params;
+
+    if (_namespaceParams === undefined || _namespaceParams === null) {
+      _namespaceParams = { namespace: '', description: '', middlewares: [] };
+    }
+
     descriptor.value = function () {
-      const hermesNameSpace: UlakNamespace = {
-        namespace,
-        description,
-        middlewares,
+      const ulakNamespace: UlakNamespace = {
+        namespace: _namespaceParams.namespace,
+        description: _namespaceParams.description,
+        middlewares: _namespaceParams.middlewares,
         eventFactories: originalMethod(),
       };
 
-      this.namespace.push(hermesNameSpace);
+      // if any ulakNamespace.namespace is already exist, throw an error
+      if (this.namespace.find((namespace) => namespace.namespace === ulakNamespace.namespace)) {
+        throw new Error('Namespace is already exist');
+      }
+
+      this.namespace.push(ulakNamespace);
+
       return originalMethod.apply(this);
     };
 

@@ -1,7 +1,7 @@
 import type { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import type { Namespace, Server } from 'socket.io';
 import type { UlakNamespaceFactory } from './namespace/UlakNamespaceFactory';
-import type { UlakNamespace } from './types/nameSpace/ulakNamespace';
+import type { UlakNamespace } from './types/namespace/ulakNamespace';
 import type { LoggerOptions } from './types/logger/logger';
 import type { UlakEventFactory } from './event/UlakEventFactory';
 
@@ -47,7 +47,7 @@ export class Ulak {
     for (const namespace of this.namespaceFactory.namespace) {
       // bind middlewares to namespace
 
-      const _namespace = this.server.of(namespace.namespace);
+      const _namespace = this.server.of(namespace.namespace || '');
 
       if (namespace.middlewares) {
         for (const middleware of namespace.middlewares) {
@@ -65,13 +65,13 @@ export class Ulak {
 
   private bindNamespaceEvents(
     namespace: UlakNamespace,
-    ioNamesapce: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
+    ioNamespace: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
   ) {
     for (const ulakEventFactory of namespace.eventFactories) {
       ulakEventFactory.io = this.server;
-      ulakEventFactory.namespace = ioNamesapce;
+      ulakEventFactory.namespace = ioNamespace;
 
-      ioNamesapce.on('connection', async (socket) => {
+      ioNamespace.on('connection', async (socket) => {
         ulakEventFactory.socket = socket;
 
         for (const event of ulakEventFactory.events) {

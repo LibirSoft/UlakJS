@@ -69,18 +69,18 @@ export class UlakEventFactory {
   }
 }
 
-interface RouteParams {
+interface EventFactoryParams {
   prefix?: string;
   description?: string;
 }
 
-export function EventFactory({ prefix, description }: RouteParams) {
+export function EventFactory(params?: EventFactoryParams) {
   return function (eventFactory: typeof UlakEventFactory): PublicConstructor<any> {
     return class extends eventFactory {
       public constructor() {
         super();
-        this.path = prefix || '';
-        this.description = description || '';
+        this.path = params?.prefix || '';
+        this.description = params?.description || '';
 
         for (const methodName of Object.getOwnPropertyNames(eventFactory.prototype)) {
           const descriptor = Object.getOwnPropertyDescriptor(eventFactory.prototype, methodName);
