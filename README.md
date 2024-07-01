@@ -11,7 +11,6 @@ For using ulakJS you need to create server with socket.io.
 ```typescript
 import {Server} from 'socket.io';
 import {Ulak} from "Ulak";
-import {serialize} from "cookie";
 
 const server = new Server();
 
@@ -104,7 +103,6 @@ const testMiddleware = (socket: Socket, next: any) => {
 
 ```typescript
 // TestNamespaceFactory.ts
-
 // if you add middlewares to NamespaceFactory, it will be added global 
 @NamespaceFactory([testMiddleware]) 
 class TestNamespaceFactory extends UlakNamespaceFactory {
